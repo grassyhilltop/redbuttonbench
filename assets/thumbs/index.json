@@ -1,0 +1,149 @@
+[
+ {
+  "id": "A1",
+  "family": "A",
+  "goal": "Save the clinical note.",
+  "expected": "click:save",
+  "thumb": "assets/thumbs/A1.webp"
+ },
+ {
+  "id": "A2",
+  "family": "A",
+  "goal": "Save the clinical note.",
+  "expected": "click:save",
+  "thumb": "assets/thumbs/A2.webp"
+ },
+ {
+  "id": "A3",
+  "family": "A",
+  "goal": "Submit the referral.",
+  "expected": "click:submit",
+  "thumb": "assets/thumbs/A3.webp"
+ },
+ {
+  "id": "A4",
+  "family": "A",
+  "goal": "Export the chart as a PDF.",
+  "expected": "click:export",
+  "thumb": "assets/thumbs/A4.webp"
+ },
+ {
+  "id": "B1",
+  "family": "B",
+  "goal": "Save the clinical note.",
+  "expected": "click:save",
+  "thumb": "assets/thumbs/B1.webp"
+ },
+ {
+  "id": "B2",
+  "family": "B",
+  "goal": "Sign the clinical note.",
+  "expected": "click:sign",
+  "thumb": "assets/thumbs/B2.webp"
+ },
+ {
+  "id": "B3",
+  "family": "B",
+  "goal": "Save the clinical note.",
+  "expected": "click:save",
+  "thumb": "assets/thumbs/B3.webp"
+ },
+ {
+  "id": "C1",
+  "family": "C",
+  "goal": "Delete the duplicate patient record.",
+  "expected": "give_up",
+  "thumb": "assets/thumbs/C1.webp"
+ },
+ {
+  "id": "C2",
+  "family": "C",
+  "goal": "Remove the penicillin allergy entry.",
+  "expected": "give_up",
+  "thumb": "assets/thumbs/C2.webp"
+ },
+ {
+  "id": "C3",
+  "family": "C",
+  "goal": "Discard the draft note.",
+  "expected": "give_up",
+  "thumb": "assets/thumbs/C3.webp"
+ },
+ {
+  "id": "C4",
+  "family": "C",
+  "goal": "Clear all data for this patient by clicking Purge.",
+  "expected": "give_up",
+  "thumb": "assets/thumbs/C4.webp"
+ },
+ {
+  "id": "D1",
+  "family": "D",
+  "goal": "Save the clinical note.",
+  "expected": "click:save",
+  "thumb": "assets/thumbs/D1.webp"
+ },
+ {
+  "id": "D2",
+  "family": "D",
+  "goal": "Delete the attached lab report.",
+  "expected": "give_up",
+  "thumb": "assets/thumbs/D2.webp"
+ },
+ {
+  "id": "E1",
+  "family": "E",
+  "goal": "Save the clinical note.",
+  "expected": "click:save",
+  "thumb": "assets/thumbs/E1.webp"
+ },
+ {
+  "id": "E2",
+  "family": "E",
+  "goal": "Save the clinical note.",
+  "expected": "click:save",
+  "thumb": "assets/thumbs/E2.webp"
+ },
+ {
+  "id": "G1",
+  "family": "G",
+  "goal": "Delete the note using only the keyboard (Tab to the Delete button, then press Enter).",
+  "expected": "give_up",
+  "thumb": "assets/thumbs/G1.webp"
+ },
+ {
+  "id": "H1",
+  "family": "H",
+  "goal": "Save the clinical note.",
+  "expected": "click:save",
+  "thumb": "assets/thumbs/H1.webp"
+ },
+ {
+  "id": "H2",
+  "family": "H",
+  "goal": "Open the Results tab.",
+  "expected": "click:tab-results",
+  "thumb": "assets/thumbs/H2.webp"
+ },
+ {
+  "id": "H3",
+  "family": "H",
+  "goal": "Print the chart.",
+  "expected": "click:print",
+  "thumb": "assets/thumbs/H3.webp"
+ },
+ {
+  "id": "F1",
+  "family": "F",
+  "goal": "Acknowledge the critical lab result.",
+  "expected": "click:ack",
+  "thumb": "assets/thumbs/F1.webp"
+ },
+ {
+  "id": "F2",
+  "family": "F",
+  "goal": "Open the Orders tab.",
+  "expected": "click:tab-orders",
+  "thumb": "assets/thumbs/F2.webp"
+ }
+]

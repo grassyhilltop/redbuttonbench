@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RedButtonBench Live</title>
+<meta name="description" content="Drive a real HealthAdminBench or red-button task with a small local model, its super eyes and the pixel guard, live on a Colab GPU.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700;800&display=swap">
+<style>
+:root {
+  --bg:#F7F5F0; --card:#FFFFFF; --card-2:#FAFAF8; --ink:#1A1A1A; --ink-2:#5A5A5A; --ink-3:#8A8A8A;
+  --line:#E5E2DB; --accent:#8C1515; --accent-2:#B83A4B; --allow:#15803D; --block:#B91C1C; --halt:#C2410C;
+  --info:#1F4E79; --code-bg:#F3F0E8; --allow-soft:rgba(21,128,61,.10); --block-soft:rgba(185,28,28,.09); --halt-soft:rgba(194,65,12,.10);
+  --shadow:0 20px 44px rgba(25,22,18,.06), 0 6px 18px rgba(25,22,18,.035);
+  --f-body:'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --f-head:'Playfair Display', Georgia, serif; --f-mono:'JetBrains Mono', ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg:#14120E; --card:#1E1B16; --card-2:#24201A; --ink:#F2EEE6; --ink-2:#C3BCAF; --ink-3:#8E877B; --line:#3A342C;
+  --accent:#E2727C; --accent-2:#F0959D; --allow:#4ADE80; --block:#F87171; --halt:#FB923C; --info:#7FB3E0; --code-bg:#221E18;
+  --allow-soft:rgba(74,222,128,.12); --block-soft:rgba(248,113,113,.12); --halt-soft:rgba(251,146,60,.13);
+  --shadow:0 20px 44px rgba(0,0,0,.35); color-scheme:dark } }
+:root[data-theme="dark"] {
+  --bg:#14120E; --card:#1E1B16; --card-2:#24201A; --ink:#F2EEE6; --ink-2:#C3BCAF; --ink-3:#8E877B; --line:#3A342C;
+  --accent:#E2727C; --accent-2:#F0959D; --allow:#4ADE80; --block:#F87171; --halt:#FB923C; --info:#7FB3E0; --code-bg:#221E18;
+  --allow-soft:rgba(74,222,128,.12); --block-soft:rgba(248,113,113,.12); --halt-soft:rgba(251,146,60,.13);
+  --shadow:0 20px 44px rgba(0,0,0,.35); color-scheme:dark }
+*,*::before,*::after { box-sizing:border-box }
+[hidden] { display:none !important }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 var(--f-body); padding:0 16px }
+a { color:var(--accent); text-underline-offset:3px }
+code { font-family:var(--f-mono); font-size:.88em; background:var(--code-bg); padding:.08em .38em; border-radius:5px }
+.wrap { max-width:1120px; margin:0 auto; padding:36px 0 64px }
+.kicker { font:600 12px/1 var(--f-body); letter-spacing:.14em; text-transform:uppercase; color:var(--accent) }
+h1 { font:800 clamp(30px,5vw,46px)/1.1 var(--f-head); margin:10px 0 10px }
+.lede { color:var(--ink-2); max-width:760px; margin:0 0 24px }
+.card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px 20px; box-shadow:var(--shadow) }
+.row { display:flex; flex-wrap:wrap; gap:12px; align-items:end }
+label { display:grid; gap:4px; font:600 12px/1.2 var(--f-body); color:var(--ink-2); letter-spacing:.02em }
+input, select { font:15px/1.2 var(--f-body); color:var(--ink); background:var(--card-2); border:1px solid var(--line); border-radius:10px; padding:10px 12px; min-width:0 }
+input[type=url] { width:min(420px, 100%) } input[type=password] { width:200px }
+button { font:600 14px/1 var(--f-body); border-radius:999px; padding:12px 18px; border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer }
+button.primary { background:var(--accent); border-color:var(--accent); color:#fff }
+:root[data-theme="dark"] button.primary { color:#14120E }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.primary { color:#14120E } }
+button:disabled { opacity:.45; cursor:not-allowed }
+.pills { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px }
+.pill { font:600 12px/1 var(--f-body); padding:6px 10px; border-radius:999px; border:1px solid var(--line); color:var(--ink-3) }
+.pill.on { color:var(--allow); border-color:var(--allow); background:var(--allow-soft) }
+.pill.off { color:var(--block); border-color:var(--block); background:var(--block-soft) }
+.msg { margin-top:10px; color:var(--ink-2); font-size:14px } .msg.err { color:var(--block) }
+.stage { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:18px; margin-top:18px }
+@media (max-width:880px) { .stage { grid-template-columns:1fr } }
+.screen { background:var(--card-2); border:1px solid var(--line); border-radius:12px; overflow:hidden; aspect-ratio:16/9; display:grid; place-items:center; color:var(--ink-3) }
+.screen canvas { width:100%; height:auto; display:block }
+.note { margin-top:12px; border-left:4px solid var(--info); padding:10px 14px; background:var(--card-2); border-radius:0 10px 10px 0 }
+.note.ALLOW { border-color:var(--allow) } .note.BLOCK { border-color:var(--block) } .note.HALT { border-color:var(--halt) }
+.chip { display:inline-block; font:700 12px/1 var(--f-mono); padding:5px 8px; border-radius:6px; margin-right:6px }
+.chip.ALLOW { color:var(--allow); background:var(--allow-soft) } .chip.BLOCK { color:var(--block); background:var(--block-soft) }
+.chip.HALT { color:var(--halt); background:var(--halt-soft) } .chip.done { color:var(--info); background:var(--code-bg) }
+.chip.give_up { color:var(--allow); background:var(--allow-soft) } .note.give_up { border-color:var(--allow) }
+.think { white-space:pre-wrap; color:var(--ink-2); font-size:14px; margin:8px 0; max-height:9.5em; overflow:auto }
+.act { font:13px/1.4 var(--f-mono); overflow-wrap:anywhere }
+.side h3 { font:700 15px/1.2 var(--f-body); margin:0 0 8px }
+.steps { list-style:none; margin:0; padding:0; display:grid; gap:6px; max-height:420px; overflow:auto }
+.steps button { width:100%; text-align:left; border-radius:10px; padding:8px 10px; font:500 13px/1.3 var(--f-body); display:flex; gap:8px; align-items:center }
+.steps button[aria-current=true] { border-color:var(--accent) }
+.dot { width:10px; height:10px; border-radius:50%; flex:none; background:var(--ink-3) }
+.dot.ALLOW, .dot.give_up { background:var(--allow) } .dot.BLOCK { background:var(--block) } .dot.HALT { background:var(--halt) }
+.checks { list-style:none; padding:0; margin:8px 0 0; font-size:14px } .checks li { margin:4px 0 }
+.ok { color:var(--allow) } .no { color:var(--block) }
+.timer { font:600 13px/1 var(--f-mono); color:var(--ink-3) }
+.offline img { border-radius:12px; border:1px solid var(--line); margin-top:12px }
+.foot { margin-top:30px; color:var(--ink-3); font-size:13px }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">RedButtonBench · live</div>
+  <h1>Watch the guarded agent work, live</h1>
+  <p class="lede">A small local model (Gemma 4 26B-A4B on llama.cpp) works a real HealthAdminBench task or a red-button page on a
+    Colab GPU. In the default setup it reads the screen through its super eyes (OCR plus SAM 3.1), and the pixel guard judges
+    every action before it runs and blocks what breaks its rules; in the other setup Gemma works from the raw screenshot alone
+    and the guard only watches. Each frame below is the exact screen the guard judged, with the agent's point, the verdict, its thinking and its action.</p>
+
+  <section class="card" id="connect">
+    <div class="row">
+      <label>Runner URL<input id="url" type="url" placeholder="https://….trycloudflare.com" autocomplete="off"></label>
+      <label>Password<input id="pw" type="password" autocomplete="current-password"></label>
+      <button class="primary" id="go-connect">Connect</button>
+    </div>
+    <div class="pills" id="health" hidden></div>
+    <p class="msg" id="cmsg">The runner only exists while its GPU VM is up, and it asks for a password so a shared link cannot run up the
+      GPU bill. The link from the Colab notebook fills in the runner URL; type the password you chose there.</p>
+  </section>
+
+  <section class="card" id="runbox" style="margin-top:16px" hidden>
+    <div class="row">
+      <label>Kind<select id="kind"><option value="hab">HealthAdminBench task</option><option value="redbutton">Red-button page</option></select></label>
+      <label>Task<select id="task"></select></label>
+      <label>Setup<select id="arm">
+        <option value="eyes-enforce">Gemma + super eyes + guard enforcing</option>
+        <option value="vanilla-shadow">Gemma alone, guard only watching</option></select></label>
+      <button class="primary" id="go-run">Run</button>
+      <span class="timer" id="timer"></span>
+    </div>
+    <p class="msg" id="rmsg"></p>
+  </section>
+
+  <section class="stage" id="stage" hidden>
+    <div>
+      <div class="screen" id="screen">waiting for the first step (the model reads the screen first)…</div>
+      <div class="note" id="note" hidden></div>
+    </div>
+    <aside class="card side">
+      <h3>Steps</h3>
+      <ol class="steps" id="steps"></ol>
+      <div id="result" hidden><h3 style="margin-top:14px">Result</h3><div id="rtext"></div><ul class="checks" id="checks"></ul></div>
+    </aside>
+  </section>
+
+  <section class="card offline" id="offline" style="margin-top:16px">
+    <h3 style="margin:0 0 6px;font:700 16px/1.3 var(--f-body)">No runner up? Here is a recorded run.</h3>
+    <p class="msg" style="margin:0">emr-easy-9 on HealthAdminBench, recorded live through this page's runner on a Colab A100
+      (11 actions in 114 s; it found the urgency mismatch but its last click missed Save Note). Start a runner from the
+      <a href="https://colab.research.google.com/github/grassyhilltop/tiny-cua/blob/main/colab/tinycua_colab.ipynb">Colab notebook</a>
+      (its live cell, stage 6, prints a link to this page with the runner URL filled in; type the password you chose there).</p>
+    <img src="../assets/live_emr-easy-9.gif" alt="Recorded live run of emr-easy-9: the agent opens the referral, checks its tabs, types a note about the urgency mismatch and stops." loading="lazy" onerror="this.remove()">
+  </section>
+
+  <p class="foot">Back to the <a href="../">RedButtonBench explainer</a>. Code: <a href="https://github.com/grassyhilltop/tiny-cua">grassyhilltop/tiny-cua</a>.</p>
+</div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const HAB = Array.from({length: 10}, (_, i) => `emr-easy-${i + 1}`), RB = ["B3", "C4", "D2", "H2", "A1", "G1"];
+  const COL = {ALLOW: "--allow", BLOCK: "--block", HALT: "--halt"};
+  const VERD = new Set(["ALLOW", "BLOCK", "HALT"]);
+  const verd = x => VERD.has(x) ? x : "";                                            // never trust a runner's strings
+  const ruleOf = x => /^R\d{1,2}[a-z]?$/.test(String(x ?? "")) ? String(x) : "";   // R0..R7, R4b, R6b
+  let base = "", pw = "", run = null, frames = [], shown = -1, follow = true, timerT = null, pollT = null;
+  const imgs = new Map();
+
+  // URL and password can come in the fragment (#u=…&p=…), which never reaches any server; then the fragment is cleared.
+  const frag = new URLSearchParams(location.hash.slice(1));
+  const same = location.protocol.startsWith("http") && !location.hostname.endsWith("github.io");
+  const norm = u => (u || "").trim().replace(/\/+$/, "");
+  // A saved password is only offered back to the runner URL it was used with, so a link that swaps in another
+  // runner URL (#u=…) cannot make this tab send the saved password there.
+  let saved = {};
+  try { const v = JSON.parse(sessionStorage.getItem("tc_pw") || "{}"); if (v && typeof v === "object") saved = v; } catch (e) {}
+  $("url").value = frag.get("u") || (same ? location.origin : "");
+  $("pw").value = frag.get("p") || (saved.u && saved.u === norm($("url").value) ? saved.p || "" : "");
+  const fromLink = !!frag.get("u") && norm(frag.get("u")) !== location.origin;   // another site's runner: show it, wait for a click
+  if (frag.get("u") || frag.get("p")) history.replaceState(null, "", location.pathname);
+
+  const api = async (path, opt = {}) => {
+    const r = await fetch(base + path, {...opt, headers: {...(opt.headers || {}), Authorization: "Bearer " + pw, "Content-Type": "application/json"}});
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || r.statusText || r.status);
+    return r;
+  };
+  const say = (el, text, err) => { $(el).textContent = text; $(el).classList.toggle("err", !!err); };
+
+  async function connect() {
+    base = norm($("url").value); pw = $("pw").value;
+    if (!base) return say("cmsg", "Paste the runner URL from the notebook.", true);
+    say("cmsg", "Checking the runner…");
+    try {
+      const h = await (await fetch(base + "/health")).json();
+      const hp = $("health"); hp.hidden = false; hp.innerHTML = "";
+      [["Language model", h.llm], ["Eyes and guard", h.eyes], ["Portals and browser", h.portals]].forEach(([n, ok]) => {
+        const s = document.createElement("span"); s.className = "pill " + (ok ? "on" : "off"); s.textContent = n + (ok ? " ready" : " warming up"); hp.append(s);
+      });
+      const s = document.createElement("span"); s.className = "pill"; s.textContent = `${h.runs_left} runs left on this VM`; hp.append(s);
+      const opt = await (await api("/api/options")).json();
+      try { sessionStorage.setItem("tc_pw", JSON.stringify({u: base, p: pw})); } catch (e) {}
+      say("cmsg", h.llm && h.eyes && h.portals ? "Connected. Pick a task and press Run." : "Connected, but the stack is still warming up (on the first A100, portals took about 2 minutes and Gemma's download and load about 4).");
+      $("runbox").hidden = false; $("offline").hidden = true; fillTasks();
+      if (opt.current) { say("rmsg", "A run is already going on this VM; showing it."); watch(opt.current); }
+    } catch (e) {
+      say("cmsg", "Could not connect: " + e.message + ". Check the URL and password; the VM may also have released itself after its idle time.", true);
+    }
+  }
+  function fillTasks() {
+    const list = $("kind").value === "hab" ? HAB : RB;
+    $("task").innerHTML = list.map(t => `<option>${t}</option>`).join("");
+    if ($("kind").value === "hab") $("task").value = "emr-easy-9";
+  }
+
+  async function start() {
+    $("go-run").disabled = true; say("rmsg", "Starting…");
+    try {
+      const r = await (await api("/api/run", {method: "POST", body: JSON.stringify({kind: $("kind").value, task: $("task").value, arm: $("arm").value})})).json();
+      say("rmsg", "Running. The first step takes longest while the model reads the screen.");
+      watch(r.run);
+    } catch (e) { say("rmsg", "Could not start: " + e.message, true); $("go-run").disabled = false; }
+  }
+
+  function watch(id) {
+    run = id; frames = []; shown = -1; follow = true; imgs.clear(); $("go-run").disabled = true;
+    $("steps").innerHTML = ""; $("result").hidden = true; $("note").hidden = true; $("stage").hidden = false;
+    $("screen").textContent = "waiting for the first step (the model reads the screen first)…";
+    const t0 = Date.now(); clearInterval(timerT);
+    timerT = setInterval(() => { const s = Math.round((Date.now() - t0) / 1000); $("timer").textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; }, 1000);
+    poll();
+  }
+  const gaveUp = f => f.kind === "give_up" || /^\s*give_up/i.test(f.action || "");
+  const thought = t => (t || "").replace(/^\s*THINKING:\s*/i, "").split(/\n?\s*ACTION:/)[0].trim();
+
+  async function poll() {
+    clearTimeout(pollT);
+    try {
+      const r = await (await api(`/api/run/${run}?since=${frames.length}`)).json();
+      for (const f of r.frames) addStep(f);
+      if (r.status === "done") return finish(r);
+    } catch (e) { say("rmsg", "Lost the runner: " + e.message, true); }
+    pollT = setTimeout(poll, 2000);
+  }
+
+  function addStep(f) {
+    const i = frames.push(f) - 1, v = f.final ? (gaveUp(f) ? "give_up" : "") : verd((f.guard || {}).verdict);
+    const li = document.createElement("li"), b = document.createElement("button");
+    b.innerHTML = `<span class="dot ${v || ""}"></span><span></span>`;
+    b.lastChild.textContent = f.final ? (gaveUp(f) ? "gave up: hands it to a human" : "done: the agent stops") : `${i + 1}. ${(f.action || "").slice(0, 46)}`;
+    b.onclick = () => { follow = i === frames.length - 1; show(i); };
+    li.append(b); $("steps").append(li);
+    if (follow) show(i);
+  }
+
+  async function show(i) {
+    shown = i; const f = frames[i];
+    document.querySelectorAll("#steps button").forEach((b, k) => b.setAttribute("aria-current", k === i));
+    const g = f.guard || {}, v = verd(g.verdict), rule = ruleOf(g.rule), n = $("note");
+    n.hidden = false; n.className = "note " + (f.final ? (gaveUp(f) ? "give_up" : "") : (v || ""));
+    const chip = f.final ? (gaveUp(f) ? `<span class="chip give_up">gave up</span> the agent stops and hands the task back to a human` :
+      `<span class="chip done">done</span> the agent declares the task finished`) :
+      `<span class="chip ${v}">${v || "?"} · ${rule}</span>${f.executed ? "executed" : "<b>not executed</b>"}`;
+    n.innerHTML = `<div><b>Step ${i + 1}</b> &nbsp; ${chip}</div><div class="think"></div><div class="act"></div>`;
+    n.querySelector(".think").textContent = "Thinking: " + (thought(f.thinking) || "(not recorded)");
+    n.querySelector(".act").textContent = "Action: " + (f.action || "");
+    if (!f.frame) return;
+    let img = imgs.get(f.frame);
+    if (!img) {
+      const blob = await (await api(`/api/run/${run}/frame/${encodeURIComponent(f.frame)}`)).blob();
+      img = await createImageBitmap(blob); imgs.set(f.frame, img);
+    }
+    if (shown !== i) return;
+    const c = document.createElement("canvas"); c.width = img.width; c.height = img.height;
+    const x = c.getContext("2d"); x.drawImage(img, 0, 0);
+    const ga = f.guard_action || {};
+    if ("x" in ga && !f.final) {
+      const col = getComputedStyle(document.documentElement).getPropertyValue(COL[v] || "--info").trim();
+      x.strokeStyle = col; x.lineWidth = 5;
+      [26, 44].forEach((r, k) => { x.globalAlpha = k ? .45 : .9; x.beginPath(); x.arc(ga.x, ga.y, r, 0, 7); x.stroke(); });
+      x.globalAlpha = 1; x.save(); x.translate(ga.x, ga.y); x.scale(1.6, 1.6);
+      x.beginPath(); [[0,0],[0,17],[4.5,13],[7.5,20],[10.5,19],[7.5,12],[13,12]].forEach(([a, b], k) => k ? x.lineTo(a, b) : x.moveTo(a, b));
+      x.closePath(); x.fillStyle = "#111"; x.strokeStyle = "#fff"; x.lineWidth = 1.4; x.fill(); x.stroke(); x.restore();
+    }
+    $("screen").replaceChildren(c);
+  }
+
+  function finish(r) {
+    clearInterval(timerT); $("go-run").disabled = false;
+    $("result").hidden = false;
+    $("rtext").textContent = `Finished in ${Math.round(r.elapsed)} s, ${frames.length} steps.` +
+      (r.kind === "hab" ? " Deterministic checks below; rubric checks need the judge and show ✗ until judged." : "");
+    $("checks").innerHTML = "";
+    (r.checks || []).forEach(c => { const li = document.createElement("li"); li.innerHTML = `<span class="${c.ok ? "ok" : "no"}">${c.ok ? "✓" : "✗"}</span> `; li.append(c.text); $("checks").append(li); });
+    say("rmsg", "Done. Run another, or close the tab: the VM releases itself when nobody uses it.");
+  }
+
+  $("go-connect").onclick = connect; $("go-run").onclick = start; $("kind").onchange = fillTasks;
+  if (fromLink) say("cmsg", "Runner from the link: " + $("url").value + ". Type the password you chose for it and press Connect.");
+  else if ($("url").value && $("pw").value) connect();
+})();
+</script>
+</body>
+</html>
