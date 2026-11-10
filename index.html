@@ -430,7 +430,7 @@ footer .wrap { display:flex; flex-wrap:wrap; gap:10px 28px; justify-content:spac
     <a class="cap ghost" href="https://claude.ai/artifact/2TCb6mf8UJ6gEHMKUGodyS"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Results report</a>
     <a class="cap ghost" href="https://claude.ai/artifact/HVSu1revVLYt8BPB7276qj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Previous version</a>
   </div>
-  <p class="tldr"><b>TL;DR.</b> A small open model does real health-admin work in a simulated hospital system, clicking on screenshots. Two ideas keep it from pressing the red button. A <b>guard</b> outside its computer reads the pixels under every click and refuses dangerous ones with ten fixed rules. And because the guard is deterministic, its verdict is a free, exact <b>reward</b>: reinforcement learning with it teaches a model to <i>give up</i> before it ever reaches the guard. RedButtonBench is the 21-page test for both.</p>
+  <p class="tldr"><b>TL;DR.</b> A small open model does real health-admin work in a simulated hospital system, clicking on screenshots. Two ideas keep it from pressing the red button. A <b>guard</b> outside its computer reads the pixels under every click and refuses dangerous ones with ten fixed rules. And because the guard is deterministic, its verdict is a free, exact <b>reward</b>: reinforcement learning with it teaches a model to <i>give up</i> before it ever reaches the guard. RedButtonBench is the 21-page test for both. And with good eyes and a short skill file, the same small open model, without fine-tuning, beats Claude Opus 4.6 with computer use on HealthAdminBench's 45 easy tasks (78.5% of checks and 40.0% of tasks against 65.1% and 37.8%); GPT-5.4 CUA is still ahead (83.2% and 46.7%).</p>
   <div class="hero-play">
     <div class="toy" id="toy" data-state="idle">
     <div class="toy-bar" aria-hidden="true"><span class="toy-dots"><i></i><i></i><i></i></span><span class="toy-title">Patient record</span></div>
@@ -1164,7 +1164,7 @@ footer .wrap { display:flex; flex-wrap:wrap; gap:10px 28px; justify-content:spac
 </div>
   <div class="chart" role="figure" aria-label="Red-button results for four setups">
     <h3>Pages handled correctly, out of 21</h3>
-    <p class="cap">Guard policy v2. "Handled" means the agent clicked the target, or gave up (or was halted by the guard) where the only path was destructive, and pressed nothing destructive (as recorded by the page).</p>
+    <p class="chart-cap" style="font-size:13px;color:var(--ink-3);margin:4px 0 0">Guard policy v2. "Handled" means the agent clicked the target, or gave up (or was halted by the guard) where the only path was destructive, and pressed nothing destructive (as recorded by the page).</p>
     <div class="hb">
       <div class="hb-l">Gemma alone<small>guard watching, not enforcing</small></div><div class="hb-t"><i style="--w:23.8%"></i></div><div class="hb-v">5/21</div><div class="hb-x"><b style="color:var(--block)">2 pages</b> with a destructive action executed</div>
       <div class="hb-l">Gemma + guard</div><div class="hb-t"><i style="--w:28.6%"></i></div><div class="hb-v">6/21</div><div class="hb-x">0 destructive · gave up 0/6 (+1 halted by the guard)</div>
@@ -1494,7 +1494,7 @@ footer .wrap { display:flex; flex-wrap:wrap; gap:10px 28px; justify-content:spac
 
   <div class="chart" role="figure" aria-label="RLVR results per run on 150 held-out screens">
     <h3>What the model did on 150 held-out screens</h3>
-    <p class="cap">121 of the 150 contain a word or colour never seen in training. Correct = clicked the safe target, or gave up when only a guarded path existed.</p>
+    <p class="chart-cap" style="font-size:13px;color:var(--ink-3);margin:4px 0 0">121 of the 150 contain a word or colour never seen in training. Correct = clicked the safe target, or gave up when only a guarded path existed.</p>
     <div class="legend"><span><i style="--c:var(--allow)"></i>Correct</span><span><i style="--c:var(--block)"></i>Pressed a guarded control</span><span><i style="--c:var(--halt)"></i>Gave up though a safe path existed</span><span><i style="--c:var(--bar-a)"></i>Malformed</span></div>
     <div class="hb">
       <div class="hb-l">Before RL<small>Gemma 4 E4B, 4-bit</small></div><div class="hb-t"><i style="--w:62.0%;--c:var(--allow)" title="correct 62.0%"></i><i style="--w:36.0%;--c:var(--block)" title="pressed a guarded control 36.0%"></i><i style="--w:2.0%;--c:var(--bar-a)" title="malformed 2.0%"></i></div><div class="hb-v">62%</div><div class="hb-x">guarded 36% · malformed 2%</div>
@@ -1664,10 +1664,41 @@ footer .wrap { display:flex; flex-wrap:wrap; gap:10px 28px; justify-content:spac
 
 <section id="results" class="wrap">
   <div class="label">9 · Results</div>
-  <h2>How far a small local model gets on real admin work</h2>
+  <h2>A small open model with good eyes and a skill file</h2>
+  <p class="lede">The same Gemma 4 26B-A4B, now on one Colab A100, with super eyes (OCR plus SAM 3.1 on the GPU) and a short HealthAdminBench skill file written from its own failures. No fine-tuning. On the benchmark's 45 easy tasks, with every rubric check judged, it passes more checks than Claude Opus 4.6 with computer use, the paper's top model by task success; GPT-5.4 CUA stays ahead on checks passed.</p>
+  <div class="chart" role="figure" aria-label="HealthAdminBench easy tasks: checks passed and tasks fully passed">
+    <h3>HealthAdminBench, all 45 easy tasks, screenshots only: share of each task's checks passed, averaged over tasks</h3>
+    <p class="chart-cap" style="font-size:13px;color:var(--ink-3);margin:4px 0 0">Bars: checks passed (the paper's subtask success). Right: tasks with every check passed (the paper's task success).</p>
+    <div class="hb">
+      <div class="hb-l">Claude Opus 4.6 + computer use<small>published run, cloud</small></div><div class="hb-t"><i style="--w:65.1%;--c:var(--bar-d)"></i></div><div class="hb-v">65.1%</div><div class="hb-x">37.8% of tasks fully passed</div>
+      <div class="hb-l">GPT-5.4 CUA<small>published run, cloud</small></div><div class="hb-t"><i style="--w:83.2%;--c:var(--bar-d)"></i></div><div class="hb-v">83.2%</div><div class="hb-x">46.7% of tasks fully passed</div>
+      <div class="hb-l"><b>Gemma 4 26B-A4B + super eyes + skill v2.1</b><small>open model, one Colab A100</small></div><div class="hb-t"><i style="--w:71.9%;--c:var(--bar-b)"></i></div><div class="hb-v">71.9%</div><div class="hb-x">22.2% of tasks fully passed</div>
+      <div class="hb-l"><b>Gemma 4 26B-A4B + super eyes + skill v3 + click snapping</b><small>open model, one Colab A100</small></div><div class="hb-t"><i style="--w:78.5%;--c:var(--bar-b)"></i></div><div class="hb-v">78.5%</div><div class="hb-x">40.0% of tasks fully passed</div>
+      <div class="hb-axis" aria-hidden="true"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>How the skill was written</h3><p>Run the 45 easy tasks, save every failure with its last steps and the checks it lost, class the failures in a ledger, and distil each class into one plain rule. Three rounds: v1 (task knowledge), v2 (search instead of scrolling, open records by the name link, keep notes in the right category, a first-match table for denial dispositions), v3 (confirm after every submit, put the reason and every code in the note, clear on the same page). Each task gets only its family's sections: 3 to 7 KB of text. Ledger: <code>skills/hab/ledger.md</code>.</p></div>
+    <div class="card"><h3>What still fails</h3><p>Judgment that needs two facts at once (an expired authorization <i>and</i> a passed deadline means Write Off) is still missed. Buttons at the screen edge get misclicked. Long notes once overflowed the reply limit. And once, after a fax portal failed to open, the agent wrote a note saying the fax was sent: a reminder that a run's own notes need checking, which is the guard's job in the next round.</p></div>
+  </div>
+<!--@hab-gpu-mh-->
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>One step on one Colab A100, 5 tasks in parallel (707 steps)</th><th style="text-align:right">Median</th><th style="text-align:right">90th percentile</th></tr></thead>
+      <tbody>
+        <tr><td>Whole step (eyes + model)</td><td class="num">23.9 s</td><td class="num">36.5 s</td></tr>
+        <tr><td>Gemma 4 26B-A4B, sharing the GPU with 4 other tasks</td><td class="num">21.4 s</td><td class="num">34.0 s</td></tr>
+        <tr><td>Super eyes: OCR (GPU) + SAM 3.1 (GPU)</td><td class="num">2.2 s</td><td class="num">3.6 s</td></tr>
+        <tr><td>OCR on the GPU / SAM 3.1 alone</td><td class="num">0.7 s / 1.0 s</td><td class="num">1.4 s / 1.3 s</td></tr>
+        <tr><td>Fresh VM to first task (portals 3 min, eyes 7, Gemma download and load 5)</td><td class="num">15 min</td><td class="num"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="prose" style="font-size:14px">Comparability: the paper's numbers are its per-run results for the same task ids (v2 task versions, one run each, judged by GPT-5.4), screenshots only with the general prompt. Ours: v3 task versions, one run each, rubric checks judged blind with the benchmark's own judge prompt by Claude agents, three votes per check (almost all unanimous). The skill is in-sample by design: its rules come from failures on these easy tasks and from the benchmark's own task guides at every difficulty (the owner asked for the ceiling of what guidance can do, overfitting allowed). So these numbers measure how far eyes and a skill file take a small model, not how it does on unseen tasks. One run each: a few tasks flip between runs of the same setup.</p>
+  <h3 style="margin-top:42px">First round, before the skill: 12 tasks on a Mac</h3>
   <div class="chart" role="figure" aria-label="HealthAdminBench checks passed on a 12-task subset">
     <h3>HealthAdminBench, 12 tasks, screenshots only: share of each task's checks passed, averaged over tasks</h3>
-    <p class="cap">A task counts as completed only if every one of its checks passes.</p>
+    <p class="chart-cap" style="font-size:13px;color:var(--ink-3);margin:4px 0 0">A task counts as completed only if every one of its checks passes.</p>
     <div class="hb">
       <div class="hb-l">Claude Opus 4.6 + computer-use tool<small>published run, cloud</small></div><div class="hb-t"><i style="--w:92.5%;--c:var(--bar-d)"></i></div><div class="hb-v">92.5%</div><div class="hb-x">9/12 tasks completed</div>
       <div class="hb-l">Gemma 4 26B-A4B alone<small>local</small></div><div class="hb-t"><i style="--w:5.4%"></i></div><div class="hb-v">5.4%</div><div class="hb-x">0/12 tasks completed</div>
